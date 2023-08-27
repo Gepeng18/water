@@ -16,7 +16,9 @@ import java.util.*;
  * */
 public class ConfigApi {
 
+    // 存储所有配置信息
     private Map<String, ConfigSetM> _cfgMap = Collections.synchronizedMap(new HashMap());
+    // 存储所有需要通知的handler
     private Map<String, Set<ConfigHandler>> _cfgSubMap = new HashMap<>();
 
     protected final ApiCaller apiCaller;
