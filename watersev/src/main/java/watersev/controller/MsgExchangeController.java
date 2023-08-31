@@ -86,6 +86,7 @@ public class MsgExchangeController implements IJob {
                 }
             }
 
+            // 计算分配给本机的broker
             MsgBroker msgBroker = broList.get(broIndex);
             BrokerHolder brokerHolder = brokerHolderMap.get(msgBroker.getName());
 
@@ -140,6 +141,7 @@ public class MsgExchangeController implements IJob {
 
         long dist_nexttime = System.currentTimeMillis();
         long time_start = dist_nexttime;
+        // 利用msgBroker取出所有5000条msgs
         List<MessageModel> msgList = msgBroker.getSource()
                 .getMessageListOfPending(5000, dist_nexttime);
 
@@ -186,6 +188,10 @@ public class MsgExchangeController implements IJob {
         }
     }
 
+    /**
+     * 1、将msg写到msgBroker对应的queue中
+     * 2、将msgBroker的source对应的msg的state设置为处理中
+     */
     private void exchangeDo(MsgBroker msgBroker, MessageModel msg) {
         try {
             //1.推送到队列（未来可以转发到不同的队列）

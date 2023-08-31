@@ -125,6 +125,10 @@ public final class MsgDistributeController implements IJob {
         });
     }
 
+    /**
+     * 从msgBroker的queue中poll出msgId，然后使用线程池处理
+     * @param brokerHolder
+     */
     private void exec1(BrokerHolder brokerHolder) {
         try {
             brokerHolder.started = true;
@@ -146,6 +150,11 @@ public final class MsgDistributeController implements IJob {
         }
     }
 
+    /**
+     * 1、由于msgBroker的queue种存的是msgId，所以还需要根据msgId从source中查询msg
+     * 2、取出订阅者，针对每个订阅者建立派发任务
+     * 3、根据msgId获取派发任务，然后向派发任务中的receive_url发送http请求
+     */
     private void distribute(MsgBroker msgBroker, String msg_id_str) {
         Thread.currentThread().setName("msg-d-" + msg_id_str);
 
@@ -172,12 +181,12 @@ public final class MsgDistributeController implements IJob {
                 msgBroker.getSource().setMessageState(msg, MessageState.processed);
             }
 
-            //路由
+            // 取出订阅者，针对每个订阅者建立派发任务
             if (routingDo(msgBroker, msg) == false) {
                 return;
             }
 
-            //派发
+            // 根据msgId获取派发任务，然后向派发任务中的receive_url发送http请求
             distributeDo(msgBroker, msg);
         } catch (Throwable ex) {
             EventBus.push(ex);
@@ -185,7 +194,8 @@ public final class MsgDistributeController implements IJob {
     }
 
     /**
-     * 路由
+     * 1、取出订阅者
+     * 2、针对每个订阅者建立派发任务
      */
     private boolean routingDo(MsgBroker msgBroker, MessageModel msg) throws Exception {
         //1.取出订阅者
@@ -223,6 +233,10 @@ public final class MsgDistributeController implements IJob {
     }
 
 
+    /**
+     * 1、根据msgId获取派发任务
+     * 2、向派发任务中的receive_url发送http请求
+     */
     private void distributeDo0(MsgBroker msgBroker, MessageModel msg) throws Exception {
         //1.取出订阅者
         Map<Long, SubscriberModel> subsList = DbWaterMsgApi.getSubscriberListByTopic(msg.topic_name);
