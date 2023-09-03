@@ -26,6 +26,7 @@ import waterapi.dso.interceptor.Logging;
 @Controller
 public class CMD_sev_reg extends UapiBase {
     /**
+     * 调用方为 {@link org.noear.solon.cloud.extend.water.service.CloudDiscoveryServiceWaterImp#run()}
      * @param service    服务名
      * @param address    地址
      * @param meta       元信息

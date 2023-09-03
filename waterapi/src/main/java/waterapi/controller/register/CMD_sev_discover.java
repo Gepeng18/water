@@ -38,12 +38,14 @@ public class CMD_sev_discover extends UapiBase {
     public Result cmd_exec(Context ctx, String tag, String service, String consumer, String consumer_address) throws Exception {
 
         if (TextUtils.isNotEmpty(consumer) && TextUtils.isNotEmpty(consumer_address)) {
-            //记录消费关系
+            //记录消费关系，即哪些服务监听service这个服务
             DbWaterRegApi.logConsume(service, consumer, consumer_address);
         }
 
+        // 从DB中读取服务列表
         List<ServiceModel> list = DbWaterRegApi.getServiceList(service);
 
+        // 从DB中读取网关列表
         GatewayModel cfg = DbWaterCfgUpstreamApi.getGatewayByName(service);
         String url = null;
         String policy = null;

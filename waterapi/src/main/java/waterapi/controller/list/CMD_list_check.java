@@ -33,6 +33,7 @@ public class CMD_list_check extends UapiBase {
             }
         }
 
+        // 服务端组
         if (WW.whitelist_tag_server.equals(tags)) {
             //令牌验证
             if (WW.whitelist_type_token.equals(type)) {
@@ -53,6 +54,7 @@ public class CMD_list_check extends UapiBase {
             }
         }
 
+        // 非服务端组
         if (DbWaterCfgSafeApi.isWhitelist(tags, type, value)) {
             return ("OK");
         } else {

@@ -57,11 +57,13 @@ public final class DbWaterRegApi {
                 .set("check_last_note", "");
 
 
+        // 按照key进行更新
         boolean isOk = db().table("water_reg_service").usingExpr(true)
                 .whereEq("key", key)
                 .update(dataItem) > 0;
 
 
+        // 如果更新失败，则insert插入
         if (isOk == false) {
             dataItem.set("key", key)
                     .set("name", service)

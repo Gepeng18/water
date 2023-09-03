@@ -44,6 +44,7 @@ public class DbWaterCfgSafeApi {
     }
 
     //加载IP白名单到静态缓存里
+    // water_cfg_whitelist 表中，tag=server,type=ip的数据就是ip白名单，tag=server，type=token就是token白名单
     public static void loadWhitelist() throws SQLException {
         List<WhitelistModel> whiteList = db().table("water_cfg_whitelist")
                 .whereEq("tag", "server")
