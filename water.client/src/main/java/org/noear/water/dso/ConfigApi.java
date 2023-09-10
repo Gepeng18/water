@@ -27,7 +27,7 @@ public class ConfigApi {
     }
 
     /**
-     * 重新加载一个tag的配置
+     * 重新加载一个tag的配置。本地缓存中有，依旧进行加载
      */
     public void reload(String tag) {
         synchronized (_cfgMap) {
@@ -40,10 +40,11 @@ public class ConfigApi {
     }
 
     /**
-     * 加载一个tag的配置
+     * 加载一个tag的配置，本地缓存中有，就不加载了
      */
     public void load(String tag) {
         synchronized (_cfgMap) {
+            // 本地缓存中有，就不加载了
             if (_cfgMap.containsKey(tag)) {
                 return;
             }
@@ -68,6 +69,7 @@ public class ConfigApi {
             }
         }
 
+        // 放到本地缓存中
         _cfgMap.put(tag, cfgSet);
 
         //尝试通知订阅者
@@ -97,6 +99,7 @@ public class ConfigApi {
 
     /**
      * 获取配置（不会返回null）
+     * 本地缓存中有，就直接返回，没有则调用water server接口获取tag标签对应的所有配置，放到本地缓存中
      */
     public ConfigM get(String tag, String key) {
         load(tag);
